@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>Bích Duyên &amp; Việt Tiến - Thiệp Cưới Minimalism Đỏ Đậm</title>
+  <meta name="description" content="Thiệp cưới Minimalism tối giản với nền kem, tông đỏ đô sang trọng và hoa mẫu đơn tinh tế của Bích Duyên & Việt Tiến." />
+  
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Bích Duyên &amp; Việt Tiến - Thiệp Cưới Minimalism Đỏ Đậm" />
+  <meta property="og:description" content="Trân trọng kính mời quý khách đến chung vui cùng Bích Duyên & Việt Tiến vào ngày 18.12.2026 tại Phước Long, Đồng Nai." />
+  <meta property="og:image" content="image/wedding-05.jpg" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍷</text></svg>" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/minimalism.css" />
+</head>
+<body class="locked">
+
+  <!-- Castle Background architectural sketch -->
+  <div class="castle-bg-layer"></div>
+
+  <!-- Ambient falling petals & shimmer particles -->
+  <canvas id="ambient-canvas"></canvas>
+
+  <!-- Audio player -->
+  <audio id="bg-audio" loop preload="auto">
+    <source src="https://pub-4ee034abad814cf5b2219f594c28724f.r2.dev/songs/mot-doi-ed2a6f03.mp3" type="audio/mp3">
+  </audio>
+
+  <!-- =========================================================================
+       1. MÀN HÌNH BÌA THƯ MỞ ĐẦU (FULLSCREEN OVERLAY)
+       ========================================================================= -->
+  <div id="envelope-overlay" class="envelope-overlay">
+    <!-- Nền các hạt tim bay lơ lửng nhẹ nhàng (Screenshot 1) -->
+    <div id="intro-floating-hearts" class="intro-floating-hearts"></div>
+
+    <!-- Tấm thiệp trung tâm mở thiệp (Screenshot 1) -->
+    <div id="intro-card" class="envelope-intro-box">
+      <!-- Cành hoa bên trái ôm sát mép thiệp -->
+      <div class="intro-flower-left">
+        <img src="image/theme-minimal/flower2-decoration.webp" alt="Hoa mẫu đơn trái" />
+      </div>
+
+      <!-- Cành hoa bên phải ôm sát mép thiệp (lật ngang) -->
+      <div class="intro-flower-right">
+        <img src="image/theme-minimal/flower2-decoration.webp" alt="Hoa mẫu đơn phải" />
+      </div>
+
+      <!-- Lớp hoa mờ tạo chiều sâu mơ màng sau hai bên thiệp -->
+      <div class="intro-flower-blur-left">
+        <img src="image/theme-minimal/flower2-decoration.webp" alt="" />
+      </div>
+      <div class="intro-flower-blur-right">
+        <img src="image/theme-minimal/flower2-decoration.webp" alt="" />
+      </div>
+
+      <div class="intro-card-content">
+        <!-- Tên Chú Rể & Cô Dâu -->
+        <div class="intro-couple-names">
+          <div class="intro-name">Nguyễn Việt Tiến</div>
+          <div class="intro-amp">&amp;</div>
+          <div class="intro-name">Nguyễn Thị Bích Duyên</div>
+        </div>
+
+        <!-- Họa tiết phân cách tim thanh nhã -->
+        <div class="intro-heart-divider">
+          <span class="intro-line"></span>
+          <svg class="intro-heart-icon" viewBox="0 0 24 24">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+          <span class="intro-line"></span>
+        </div>
+
+        <!-- Ngày cưới -->
+        <p class="intro-wedding-date">18 tháng 12, 2026</p>
+
+        <!-- Thân mời khách -->
+        <p class="intro-invite-label">Thân Mời</p>
+        <p id="envelope-guest-name" class="intro-guest-name">Quý Khách</p>
+
+        <!-- Nút Mở thiệp -->
+        <button type="button" id="btn-open-envelope" class="btn-open-main">
+          <span>Mở thiệp</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Container hiệu ứng nổ một tràng tim khi mở thiệp (Screenshot 2) -->
+    <div id="heart-burst-container" class="heart-burst-container"></div>
+  </div>
+
+  <!-- =========================================================================
+       2. TOP BAR & CONTROLLERS
+       ========================================================================= -->
+  <header class="top-nav">
+    <a href="#" class="top-nav-logo">D &amp; T</a>
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+      <a href="https://github.com/ngphhnam/thiep-cuoi-VietTien-BichDuyen" class="btn-theme-switch" title="Chuyển sang mẫu Cổ Điển Hoàng Gia">
+        <span>Mẫu Cổ Điển</span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+      <button id="btn-toggle-music" class="btn-music-toggle" title="Bật / Tắt nhạc">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 18V5l12-2v13"></path>
+          <circle cx="6" cy="18" r="3"></circle>
+          <circle cx="18" cy="16" r="3"></circle>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       3. NỘI DUNG CHÍNH (MAIN WEDDING CONTENT)
+       ========================================================================= -->
+  <main id="wedding-content" class="site-wrapper">
+
+    <!-- HERO SECTION: PHONG BÌ ĐỎ + ẢNH CẶP ĐÔI + HOA MẪU ĐƠN (SCREENSHOT 1) -->
+    <section class="hero-envelope-section">
+      <p class="save-the-date-text">SAVE THE DATE</p>
+
+      <!-- Tấm thiệp phong bì nghệ thuật với ảnh thò ra ngoài -->
+      <div class="envelope-composition">
+        <!-- Đáy phong bì -->
+        <img src="image/theme-minimal/envelope-background.webp" alt="" class="env-back-img" />
+
+        <!-- Ảnh cưới thò ra và nghiêng 12 độ -->
+        <div class="env-photo-holder">
+          <div class="env-photo-card">
+            <img src="image/wedding-05.jpg" alt="Bích Duyên &amp; Việt Tiến" />
+          </div>
+        </div>
+
+        <!-- Cành hoa mẫu đơn nở xòe bên trái -->
+        <div class="env-flower-left">
+          <img src="image/theme-minimal/flower2-decoration.webp" alt="Hoa mẫu đơn" />
+        </div>
+
+        <!-- Nắp phong bì đỏ với con dấu sáp vàng phía trước -->
+        <img src="image/theme-minimal/envelope-cover.webp" alt="" class="env-front-cover" />
+      </div>
+
+      <!-- Tên cô dâu chú rể phong cách Typography thanh lịch -->
+      <h1 class="hero-names-display">
+        <span>Bích Duyên</span>
+        <span class="amp">&amp;</span>
+        <span>Việt Tiến</span>
+      </h1>
+      
+      <div style="font-size: 0.85rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-gold); margin-top: 0.6rem;">
+        18 . 12 . 2026
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         4. THÔNG TIN LỄ CƯỚI - CÓ HOA MẪU ĐƠN BÊN PHẢI (SCREENSHOT 2)
+         ========================================================================= -->
+    <section id="ceremony-section" class="card-section">
+      <!-- Cành hoa mẫu đơn vươn ra ở mép phải của tấm thiệp đỏ -->
+      <div class="side-flower-right">
+        <img src="image/theme-minimal/flower2-decoration.webp" alt="Hoa mẫu đơn" />
+      </div>
+
+      <!-- Tấm thiệp đỏ đô bo tròn chuẩn Chung Đôi -->
+      <div class="dark-red-card">
+        <h2 class="card-main-title">THÔNG TIN LỄ CƯỚI</h2>
+
+        <!-- Gia đình hai bên -->
+        <div class="dark-parents-grid">
+          <div class="dark-parent-col">
+            <div class="title">Nhà Gái</div>
+            <div class="names">
+              Ông <strong>Nguyễn Văn A</strong><br />
+              Bà <strong>Nguyễn Văn B</strong>
+            </div>
+            <div class="place">Phước Long, Đồng Nai</div>
+          </div>
+
+          <div class="dark-parent-col">
+            <div class="title">Nhà Trai</div>
+            <div class="names">
+              Ông <strong>Nguyễn Văn A</strong><br />
+              Bà <strong>Nguyễn Văn B</strong>
+            </div>
+            <div class="place">Phước Long, Đồng Nai</div>
+          </div>
+        </div>
+
+        <p class="card-sub-announcement">
+          TRÂN TRỌNG BÁO TIN<br />LỄ THÀNH HÔN CỦA CON CHÚNG TÔI
+        </p>
+
+        <!-- Tên cô dâu chú rể -->
+        <div>
+          <h3 class="dark-couple-name">Nguyễn Việt Tiến</h3>
+          <span class="dark-couple-role">Út Nam</span>
+        </div>
+
+        <div class="dark-ampersand">&amp;</div>
+
+        <div>
+          <h3 class="dark-couple-name">Nguyễn Thị Bích Duyên</h3>
+          <span class="dark-couple-role">Trưởng Nữ</span>
+        </div>
+
+        <p class="card-sub-announcement" style="margin-top: 1.6rem; margin-bottom: 0.6rem;">
+          LỄ THÀNH HÔN ĐƯỢC CỬ HÀNH TẠI TƯ GIA
+        </p>
+        <p style="font-size: 0.95rem; color: #fffaf3; margin-bottom: 0.8rem;">
+          VÀO LÚC 09:00 &nbsp;|&nbsp; THỨ SÁU
+        </p>
+
+        <!-- Khung số ngày 18 Tháng 12 2026 -->
+        <div class="dark-date-row">
+          <div class="dark-big-day">18</div>
+          <div class="dark-month-year">
+            THÁNG 12<br />2026
+          </div>
+        </div>
+
+        <p class="dark-lunar-date">(TỨC NGÀY 10 THÁNG 11 NĂM BÍNH NGỌ)</p>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         5. THÔNG TIN TIỆC CƯỚI & LỊCH THÁNG 12 - CÓ HOA BÊN TRÁI (SCREENSHOT 3)
+         ========================================================================= -->
+    <section class="card-section">
+      <!-- Cành hoa mẫu đơn nở ở mép trái của tấm thiệp đỏ (lật ngang) -->
+      <div class="side-flower-left">
+        <img src="image/theme-minimal/flower2-decoration.webp" alt="Hoa mẫu đơn" />
+      </div>
+
+      <!-- Tấm thiệp đỏ đô tiệc cưới -->
+      <div class="dark-red-card">
+        <h2 class="card-main-title">THÔNG TIN TIỆC CƯỚI</h2>
+
+        <p class="card-sub-announcement">TIỆC CƯỚI SẼ DIỄN RA VÀO LÚC:</p>
+        
+        <p style="font-size: 1rem; color: #fffaf3; margin-bottom: 0.6rem;">
+          11:00 &nbsp;|&nbsp; THỨ SÁU
+        </p>
+
+        <!-- Ngày cưới -->
+        <div class="dark-date-row" style="margin: 0.8rem 0;">
+          <div class="dark-big-day">18</div>
+          <div class="dark-month-year">
+            THÁNG 12<br />2026
+          </div>
+        </div>
+
+        <p class="dark-lunar-date">(TỨC NGÀY 10 THÁNG 11 NĂM BÍNH NGỌ)</p>
+
+        <!-- Thời gian đón khách & khai tiệc -->
+        <div class="dark-time-slots">
+          <div class="dark-slot-item">
+            <span>ĐÓN KHÁCH</span>
+            <span>11:00</span>
+          </div>
+          <div class="dark-slot-item">
+            <span>KHAI TIỆC</span>
+            <span>11:30</span>
+          </div>
+        </div>
+
+        <p style="font-size: 1.05rem; color: #fffaf3; margin-top: 0.8rem;">
+          Trung Tâm Tiệc Cưới
+        </p>
+        <p style="font-size: 0.85rem; color: rgba(236, 228, 216, 0.75); margin-bottom: 1.4rem;">
+          Phước Long, Đồng Nai
+        </p>
+
+        <a href="https://maps.google.com/?q=Ph%C6%B0%E1%BB%9Bc+Long%2C+%C4%90%E1%BB%93ng+Nai" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.4rem; background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 9999px; color: #fffaf3; font-size: 0.82rem; text-decoration: none; margin-bottom: 1.2rem;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          Chỉ đường Google Maps
+        </a>
+
+        <!-- Cuốn lịch kem nhúng trong tấm thiệp đỏ (Screenshot 3) -->
+        <div class="embedded-calendar-card">
+          <div class="embedded-cal-title">Tháng 12 / 2026</div>
+
+          <table class="cal-table-mini">
+            <thead>
+              <tr>
+                <th>T2</th><th>T3</th><th>T4</th><th>T5</th><th>T6</th><th>T7</th><th>CN</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td></td>
+                <td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td>
+              </tr>
+              <tr>
+                <td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td>
+              </tr>
+              <tr>
+                <td>14</td><td>15</td><td>16</td><td>17</td>
+                <!-- Ngày 18 có dấu trái tim đỏ đô nổi bật -->
+                <td class="cal-wedding-heart" title="Ngày cưới">18</td>
+                <td>19</td><td>20</td>
+              </tr>
+              <tr>
+                <td>21</td><td>22</td><td>23</td><td>24</td><td>25</td><td>26</td><td>27</td>
+              </tr>
+              <tr>
+                <td>28</td><td>29</td><td>30</td><td>31</td>
+                <td></td><td></td><td></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="margin-top: 1rem;">
+            <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=%C4%90%C3%A1m+C%C6%B0%E1%BB%9Bi+B%C3%ADch+Duy%C3%AAn+%26+Vi%E1%BB%87t+Ti%E1%BA%BFn&dates=20261218T020000Z/20261218T070000Z&details=Tr%C3%A2n+tr%E1%BB%8Dng+k%C3%ADnh+m%E1%BB%9Di+b%E1%BA%A1n+%C4%91%E1%BA%BFn+chung+vui+c%C3%B9ng+ch%C3%BAng+m%C3%ACnh+t%E1%BA%A1i+Ph%C6%B0%E1%BB%9Bc+Long%2C+%C4%90%E1%BB%93ng+Nai.&location=Ph%C6%B0%E1%BB%9Bc+Long%2C+%C4%90%E1%BB%93ng+Nai" target="_blank" rel="noopener noreferrer" style="font-size: 0.78rem; color: #511419; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.35rem 0.9rem; border: 1px solid rgba(81, 20, 25, 0.2); border-radius: 9999px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+              </svg>
+              Thêm vào Google Calendar
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         6. LỊCH TRÌNH NGÀY CƯỚI - CÓ HOA BÊN PHẢI & ICONS (SCREENSHOT 4)
+         ========================================================================= -->
+    <section class="card-section">
+      <!-- Cành hoa mẫu đơn ở mép phải trên -->
+      <div class="side-flower-top-right">
+        <img src="image/theme-minimal/flower2-decoration.webp" alt="Hoa mẫu đơn" />
+      </div>
+
+      <!-- Tấm thiệp đỏ đô lịch trình -->
+      <div class="dark-red-card">
+        <h2 class="card-main-title">LỊCH TRÌNH NGÀY CƯỚI</h2>
+
+        <div class="timeline-icon-list">
+          <!-- 09:00 Lễ Vu Quy -->
+          <div class="timeline-icon-row">
+            <div class="timeline-left-time">
+              <span>09:00</span>
+            </div>
+            <div class="timeline-center-dot"></div>
+            <div class="timeline-right-desc">Lễ Vu Quy tại Tư Gia</div>
+          </div>
+
+          <!-- 11:00 Đón khách (Camera icon) -->
+          <div class="timeline-icon-row">
+            <div class="timeline-left-time">
+              <img src="image/theme-minimal/camera.webp" alt="Camera" />
+              <span>11:00</span>
+            </div>
+            <div class="timeline-center-dot"></div>
+            <div class="timeline-right-desc">Đón tiếp quan khách</div>
+          </div>
+
+          <!-- 11:30 Khai tiệc -->
+          <div class="timeline-icon-row">
+            <div class="timeline-left-time">
+              <span>11:30</span>
+            </div>
+            <div class="timeline-center-dot"></div>
+            <div class="timeline-right-desc">Khai tiệc &amp; Nghi thức cưới</div>
+          </div>
+
+          <!-- 12:00 Cắt bánh & nâng ly (Cake icon) -->
+          <div class="timeline-icon-row">
+            <div class="timeline-left-time">
+              <img src="image/theme-minimal/cake.webp" alt="Cake" />
+              <span>12:00</span>
+            </div>
+            <div class="timeline-center-dot"></div>
+            <div class="timeline-right-desc">Cắt bánh &amp; Nâng ly mừng</div>
+          </div>
+
+          <!-- 12:30 Dùng tiệc (Cook icon) -->
+          <div class="timeline-icon-row">
+            <div class="timeline-left-time">
+              <img src="image/theme-minimal/cook.webp" alt="Cook" />
+              <span>12:30</span>
+            </div>
+            <div class="timeline-center-dot"></div>
+            <div class="timeline-right-desc">Dùng tiệc &amp; Giao lưu</div>
+          </div>
+
+          <!-- 13:30 Chụp ảnh & Kết thúc -->
+          <div class="timeline-icon-row">
+            <div class="timeline-left-time">
+              <span>13:30</span>
+            </div>
+            <div class="timeline-center-dot"></div>
+            <div class="timeline-right-desc">Chụp hình &amp; Kết thúc tiệc</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         7. DRESS CODE (GỢI Ý TRANG PHỤC)
+         ========================================================================= -->
+    <section style="text-align: center; margin: 2rem 0;">
+      <p style="font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--color-gold); font-weight: 600;">DRESS CODE</p>
+      <h3 style="font-family: var(--font-serif-heading); font-size: 1.3rem; color: #511419; margin: 0.3rem 0 0.8rem;">Trang Phục Gợi Ý</h3>
+      
+      <div style="display: flex; justify-content: center; gap: 1.5rem;">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 0.4rem;">
+          <div style="width: 42px; height: 42px; border-radius: 50%; background: #6e1a20; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.15);"></div>
+          <span style="font-size: 0.75rem; color: #511419;">Đỏ Đô</span>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 0.4rem;">
+          <div style="width: 42px; height: 42px; border-radius: 50%; background: #f3e8dc; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.15);"></div>
+          <span style="font-size: 0.75rem; color: #511419;">Be Nhạt</span>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 0.4rem;">
+          <div style="width: 42px; height: 42px; border-radius: 50%; background: #ffffff; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.15);"></div>
+          <span style="font-size: 0.75rem; color: #511419;">Trắng Kem</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         8. ĐỒNG HỒ ĐẾM NGƯỢC (LIVE COUNTDOWN TIMER)
+         ========================================================================= -->
+    <section>
+      <div class="countdown-minimal-card">
+        <p style="font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-gold); font-weight: 600;">COUNTDOWN</p>
+        <h3 style="font-family: var(--font-serif-heading); font-size: 1.25rem; color: #511419; margin: 0.2rem 0;">Cùng Đếm Ngược Ngày Chung Đôi</h3>
+
+        <div class="countdown-digits">
+          <div class="digit-box">
+            <div id="count-days" class="digit-num">00</div>
+            <div class="digit-txt">Ngày</div>
+          </div>
+          <div class="digit-box">
+            <div id="count-hours" class="digit-num">00</div>
+            <div class="digit-txt">Giờ</div>
+          </div>
+          <div class="digit-box">
+            <div id="count-mins" class="digit-num">00</div>
+            <div class="digit-txt">Phút</div>
+          </div>
+          <div class="digit-box">
+            <div id="count-secs" class="digit-num">00</div>
+            <div class="digit-txt">Giây</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         9. ALBUM ẢNH CƯỚI NGHỆ THUẬT (EDITORIAL GALLERY)
+         ========================================================================= -->
+    <section style="margin: 3.5rem 0 2rem; text-align: center;">
+      <p style="font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--color-gold); font-weight: 600;">ALBUM</p>
+      <h3 style="font-family: var(--font-serif-heading); font-size: 1.55rem; color: #511419; margin: 0.2rem 0 1.2rem;">Khoảnh Khắc Hạnh Phúc</h3>
+
+      <div class="editorial-gallery-grid">
+        <div class="editorial-gallery-item span-2" onclick="openMinimalLightbox(0)">
+          <img src="image/wedding-05.jpg" alt="Khoảnh khắc hạnh phúc" loading="lazy" />
+        </div>
+        <div class="editorial-gallery-item" onclick="openMinimalLightbox(1)">
+          <img src="image/wedding-01.jpg" alt="Chú rể Việt Tiến" loading="lazy" />
+        </div>
+        <div class="editorial-gallery-item" onclick="openMinimalLightbox(2)">
+          <img src="image/wedding-02.jpg" alt="Cô dâu Bích Duyên" loading="lazy" />
+        </div>
+        <div class="editorial-gallery-item span-2" onclick="openMinimalLightbox(3)">
+          <img src="image/wedding-03.jpg" alt="Ánh mắt trao nhau" loading="lazy" />
+        </div>
+        <div class="editorial-gallery-item" onclick="openMinimalLightbox(4)">
+          <img src="image/wedding-04.jpg" alt="Nụ cười rạng rỡ" loading="lazy" />
+        </div>
+        <div class="editorial-gallery-item" onclick="openMinimalLightbox(5)">
+          <img src="image/wedding-06.jpg" alt="Bên nhau bình yên" loading="lazy" />
+        </div>
+        <div class="editorial-gallery-item" onclick="openMinimalLightbox(6)">
+          <img src="image/wedding-07.jpg" alt="Câu chuyện lãng mạn" loading="lazy" />
+        </div>
+        <div class="editorial-gallery-item" onclick="openMinimalLightbox(7)">
+          <img src="image/wedding-08.jpg" alt="Phong cách thanh lịch" loading="lazy" />
+        </div>
+      </div>
+
+      <button onclick="openMinimalLightbox(0)" style="padding: 0.65rem 2rem; background: #511419; color: #fff; border: 1px solid rgba(201, 162, 74, 0.4); border-radius: 9999px; font-size: 0.82rem; cursor: pointer;">
+        Xem toàn bộ Album (16 ảnh)
+      </button>
+    </section>
+
+    <!-- =========================================================================
+         10. HỘP QUÀ MỪNG - 2 PHONG BÌ ĐỎ (SCREENSHOT 5)
+         ========================================================================= -->
+    <section class="lucky-money-section">
+      <h3 class="lucky-money-title">HỘP QUÀ MỪNG</h3>
+
+      <!-- Hình 2 phong bao lì xì đỏ mẫu Chung Đôi -->
+      <div id="btn-open-gift" class="lucky-envelopes-wrap" title="Bấm để mở hộp mừng cưới">
+        <img src="image/theme-minimal/minimalism_darkred.webp" alt="Hộp quà mừng" />
+        <p class="lucky-hint-text">Nhấn để mở</p>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         11. SỔ LƯU BÚT (GUESTBOOK)
+         ========================================================================= -->
+    <section style="margin: 3rem 0; background: rgba(255, 253, 249, 0.85); border: 1px solid rgba(81, 20, 25, 0.15); border-radius: 12px; padding: 1.8rem 1.4rem;">
+      <div style="text-align: center; margin-bottom: 1.2rem;">
+        <p style="font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-gold); font-weight: 600;">GUESTBOOK</p>
+        <h3 style="font-family: var(--font-serif-heading); font-size: 1.35rem; color: #511419;">Gửi Lời Chúc Phúc</h3>
+      </div>
+
+      <form id="wish-form">
+        <div style="margin-bottom: 0.8rem;">
+          <input type="text" id="wish-name-input" placeholder="Tên của bạn..." required style="width: 100%; padding: 0.7rem 0.9rem; border: 1px solid rgba(81, 20, 25, 0.2); border-radius: 6px; font-family: var(--font-sans); font-size: 0.9rem;" />
+        </div>
+        <div style="margin-bottom: 1rem;">
+          <textarea id="wish-msg-input" placeholder="Viết lời chúc phúc gửi tới cô dâu &amp; chú rể..." required style="width: 100%; min-height: 70px; padding: 0.7rem 0.9rem; border: 1px solid rgba(81, 20, 25, 0.2); border-radius: 6px; font-family: var(--font-sans); font-size: 0.9rem;"></textarea>
+        </div>
+        <button type="submit" style="width: 100%; padding: 0.75rem; background: #511419; color: #fff; border: none; border-radius: 6px; font-family: var(--font-sans); font-weight: 600; font-size: 0.9rem; cursor: pointer;">
+          Gửi Lời Chúc
+        </button>
+      </form>
+
+      <div id="wishes-list" style="margin-top: 1.5rem; max-height: 280px; overflow-y: auto;"></div>
+    </section>
+
+    <!-- =========================================================================
+         12. CHÂN TRANG & LỜI CẢM ƠN (FOOTER)
+         ========================================================================= -->
+    <footer style="text-align: center; padding: 2.5rem 0 3.5rem; border-top: 1px solid rgba(81, 20, 25, 0.15);">
+      <div style="font-family: var(--font-serif-heading); font-size: 1.6rem; color: #511419; margin-bottom: 0.3rem;">Bích Duyên &amp; Việt Tiến</div>
+      <p style="font-size: 1rem; color: rgba(81, 20, 25, 0.75); margin-bottom: 1.2rem;">
+        Xin chân thành cảm ơn và hân hạnh được đón tiếp Quý khách!
+      </p>
+
+      <div>
+        <a href="https://github.com/ngphhnam/thiep-cuoi-VietTien-BichDuyen" class="btn-theme-switch" style="font-size: 0.8rem; padding: 0.5rem 1.2rem;">
+          <span>← Xem Giao Diện Mẫu Cổ Điển Hoàng Gia (Sunswedding)</span>
+        </a>
+      </div>
+    </footer>
+  </main>
+
+  <!-- =========================================================================
+       POPUP MODAL: HỘP QUÀ MỪNG CƯỚI (QR CODES & STK)
+       ========================================================================= -->
+  <div id="gift-modal" class="modal-backdrop">
+    <div class="modal-box">
+      <button id="gift-modal-close" class="btn-modal-close" aria-label="Đóng">&times;</button>
+      
+      <div style="text-align: center; margin-bottom: 1.2rem;">
+        <p style="font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-gold); font-weight: 600;">MỪNG CƯỚI</p>
+        <h3 style="font-family: var(--font-serif-heading); font-size: 1.45rem; color: #511419;">Hộp Quà Mừng</h3>
+      </div>
+
+      <!-- Tài khoản Cô Dâu -->
+      <div class="bank-qr-card">
+        <div style="font-family: var(--font-serif-heading); font-size: 1.15rem; color: #511419; font-weight: 600; margin-bottom: 0.5rem;">
+          Cô Dâu: NGUYỄN THỊ BÍCH DUYÊN
+        </div>
+        <img src="image/qr-bride.webp" alt="Mã QR Cô Dâu" />
+        <div style="font-size: 0.88rem; color: #511419; line-height: 1.5;">
+          <strong>Vietcombank (VCB)</strong><br />
+          Số tài khoản: <strong>1028777666</strong><br />
+          Chủ TK: NGUYEN THI BICH DUYEN
+        </div>
+        <button class="btn-copy-acc" data-acc="1028777666">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          Sao chép số tài khoản
+        </button>
+      </div>
+
+      <!-- Tài khoản Chú Rể -->
+      <div class="bank-qr-card">
+        <div style="font-family: var(--font-serif-heading); font-size: 1.15rem; color: #511419; font-weight: 600; margin-bottom: 0.5rem;">
+          Chú Rể: NGUYỄN VIỆT TIẾN
+        </div>
+        <img src="image/qr-groom.webp" alt="Mã QR Chú Rể" />
+        <div style="font-size: 0.88rem; color: #511419; line-height: 1.5;">
+          <strong>Vietcombank (VCB)</strong><br />
+          Số tài khoản: <strong>1018999888</strong><br />
+          Chủ TK: NGUYEN VIET TIEN
+        </div>
+        <button class="btn-copy-acc" data-acc="1018999888">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          Sao chép số tài khoản
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       POPUP LIGHTBOX: PHÓNG TO ẢNH TOÀN MÀN HÌNH
+       ========================================================================= -->
+  <div id="lightbox-modal" class="lightbox-overlay">
+    <button id="lightbox-close" style="position: absolute; top: 1rem; right: 1rem; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.2); border: none; color: #fff; font-size: 1.5rem; cursor: pointer;">&times;</button>
+    <button id="lightbox-prev" class="btn-lightbox-nav prev" aria-label="Ảnh trước">&#10094;</button>
+    <div class="lightbox-wrap">
+      <img id="lightbox-img" src="image/wedding-05.jpg" alt="Ảnh cưới phóng to" />
+    </div>
+    <button id="lightbox-next" class="btn-lightbox-nav next" aria-label="Ảnh tiếp">&#10095;</button>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/minimalism.js"></script>
+</body>
+</html>
